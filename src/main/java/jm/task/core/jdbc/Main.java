@@ -34,16 +34,9 @@ public class Main {
         System.out.println("Возраст ");
         String age = scanner.nextLine();
         userService.saveUser(name, lastName, Byte.parseByte(age));
-//
-//        System.out.println("Удаление по id: ");
-//        String id = scanner.nextLine();
-//        userDaoJDBC.removeUserById(Long.parseLong(id));
-
-        //userDaoJDBC.getAllUsers();
-//        userDaoJDBC.cleanUsersTable();
 
 
-        userService.closeBase();
+
 
 
     }

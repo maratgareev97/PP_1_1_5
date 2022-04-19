@@ -13,23 +13,23 @@ public class UserDaoJDBCImpl implements UserDao {
     private static Statement statement = null;
     private static Connection conn = Util.getConn();
 
-    public UserDaoJDBCImpl() {
-
-    }
-
-    //---------------------------------------
-    public void connection_base() {
-    }
-
-    //---------------------------------------------
-    public void createUsersTable() {
-        String sql = "CREATE TABLE IF NOT EXISTS kata1_1.user (id INT auto_increment NOT NULL, name varchar(100) null," +
-                " lastName varchar(100), age int, primary key(id))ENGINE=InnoDB;";
+    static {
         try {
             statement = conn.createStatement();
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    public UserDaoJDBCImpl() {
+    }
+
+    public void connection_base() {
+    }
+
+    public void createUsersTable() {
+        String sql = "CREATE TABLE IF NOT EXISTS kata1_1.user (id INT auto_increment NOT NULL, name varchar(100) null," +
+                " lastName varchar(100), age int, primary key(id))ENGINE=InnoDB;";
         try {
             statement.executeUpdate(sql);
             System.out.println("Таблица создана");
@@ -37,16 +37,10 @@ public class UserDaoJDBCImpl implements UserDao {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
     }
 
     public void dropUsersTable() {
         String sql = "DROP TABLE kata1_1.user;";
-        try {
-            statement = conn.createStatement();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
         try {
             statement.executeUpdate(sql);
             System.out.println("Таблица удалена");
@@ -56,12 +50,6 @@ public class UserDaoJDBCImpl implements UserDao {
     }
 
     public void saveUser(String name, String lastName, byte age) {
-        try {
-            statement = conn.createStatement();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-
         int rows = 0;
         String sql = "INSERT INTO kata1_1.user (name, lastName, age) VALUES (?, ?, ?)";
         try {
@@ -81,11 +69,6 @@ public class UserDaoJDBCImpl implements UserDao {
 
     public List<User> getAllUsers() {
         List<User> users = new ArrayList<User>();
-        try {
-            statement = conn.createStatement();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
         int rows = 0;
         String sql = "select name, lastName, age from kata1_1.user;";
         try {
@@ -103,13 +86,7 @@ public class UserDaoJDBCImpl implements UserDao {
 
     }
 
-
     public void cleanUsersTable() {
-        try {
-            statement = conn.createStatement();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
         int rows = 0;
         String sql = "DELETE FROM kata1_1.user;";
         try {
@@ -118,15 +95,5 @@ public class UserDaoJDBCImpl implements UserDao {
             e.printStackTrace();
         }
         System.out.print("Удалена строка");
-    }
-
-    public void closeBase() {
-        try {
-            conn.close();
-            System.out.println();
-            System.out.println("База закрыта");
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
     }
 }
