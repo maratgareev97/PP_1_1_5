@@ -16,7 +16,6 @@ public class UserServiceTest {
     //--------------------
     @Test
     public void connection_base() {
-        //connection_base();
         Util.getConn();
         userService.connection_base();
     }
@@ -26,7 +25,7 @@ public class UserServiceTest {
     public void dropUsersTable() {
         try {
             userService.dropUsersTable();
-            //userService.dropUsersTable();
+            userService.dropUsersTable();
         } catch (Exception e) {
             Assert.fail("При тестировании удаления таблицы произошло исключение\n" + e);
         }

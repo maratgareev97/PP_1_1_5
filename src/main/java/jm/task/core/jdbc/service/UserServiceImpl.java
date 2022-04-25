@@ -12,7 +12,7 @@ import java.util.List;
 
 public class UserServiceImpl implements UserService {
 
-    UserDao userDao = new UserDaoJDBCImpl();
+    //UserDao userDao = new UserDaoJDBCImpl();
     UserDao userDaoHibernate = new UserDaoHibernateImpl();
 
     public void connection_base() {
@@ -24,6 +24,7 @@ public class UserServiceImpl implements UserService {
 
     public void dropUsersTable() {
         userDaoHibernate.dropUsersTable();
+        //userDao.dropUsersTable();
     }
 
     public void saveUser(String name, String lastName, byte age) {
@@ -32,7 +33,7 @@ public class UserServiceImpl implements UserService {
     }
 
     public void removeUserById(long id) {
-
+        userDaoHibernate.removeUserById(id);
     }
 
     public List<User> getAllUsers() {

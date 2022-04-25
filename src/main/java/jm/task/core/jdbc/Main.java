@@ -30,7 +30,8 @@ public class Main {
 //        String age = scanner.nextLine();
 //        userService1.saveUser(name, lastName, Byte.parseByte(age));
 
-        userService.getAllUsers();
+        //userService.getAllUsers();
+        userService.dropUsersTable();
 
 
 

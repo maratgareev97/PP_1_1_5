@@ -15,58 +15,54 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class UserDaoHibernateImpl implements UserDao {
+    Transaction transaction = null;
 
-    private static Statement statement = null;
-    private static Connection conn = Util.getConn();
-
-    static {
-        try {
-            statement = conn.createStatement();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-
-    public UserDaoHibernateImpl() {
-
-    }
+    public UserDaoHibernateImpl() {}
 
     @Override
-    public void connection_base() {
-
-    }
+    public void connection_base() {}
 
     @Override
     public void createUsersTable() {
         String sql = "CREATE TABLE IF NOT EXISTS kata1_1.user (id INT auto_increment NOT NULL, name varchar(100) null," +
                 " lastName varchar(100), age int, primary key(id))ENGINE=InnoDB;";
-        try {
-            statement.executeUpdate(sql);
-            System.out.println("Таблица создана");
 
-        } catch (SQLException e) {
-            e.printStackTrace();
+        try (Session session = Util.getSessionFactory().openSession()) {
+            transaction = session.beginTransaction();
+            try {
+                session.createSQLQuery(sql).executeUpdate();
+            } catch (Exception e) {
+                System.out.println("");
+            }
+            transaction.commit();
+        } catch (Exception e) {
+            if (transaction != null) {
+                transaction.rollback();
+            }
         }
-
     }
 
     @Override
     public void dropUsersTable() {
         String sql = "DROP TABLE kata1_1.user;";
-        try {
-            statement.executeUpdate(sql);
-            System.out.println("Таблица удалена");
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
 
+        try (Session session = Util.getSessionFactory().openSession()) {
+            transaction = session.beginTransaction();
+            try {
+                session.createSQLQuery(sql).executeUpdate();
+            } catch (Exception e) {
+                System.out.println("Таблицы уже нет");
+            }
+            transaction.commit();
+        } catch (Exception e) {
+            if (transaction != null) {
+                transaction.rollback();
+            }
+        }
     }
 
     @Override
     public void saveUser(String name, String lastName, byte age) {
-        Transaction transaction = null;
-
         try (Session session = Util.getSessionFactory().openSession()) {
             transaction = session.beginTransaction();
 
@@ -82,17 +78,24 @@ public class UserDaoHibernateImpl implements UserDao {
 
     @Override
     public void removeUserById(long id) {
-
+         try (Session session = Util.getSessionFactory().openSession()) {
+            transaction = session.beginTransaction();
+            User user = (User) session.get(User.class,id);
+            session.delete(user);
+            transaction.commit();
+        } catch (Exception e) {
+            if (transaction != null) {
+                transaction.rollback();
+            }
+        }
     }
 
     @Override
     public List<User> getAllUsers() {
         List<User> users = new ArrayList<User>();
-        Transaction transaction = null;
 
         try (Session session = Util.getSessionFactory().openSession()) {
             transaction = session.beginTransaction();
-            //User userget = session.get(User.class,1L);
             Query query = session.createQuery("from User");
             users = query.list();
             System.out.println("----------------------------" + users);
@@ -103,24 +106,18 @@ public class UserDaoHibernateImpl implements UserDao {
             }
         }
         return users;
-
     }
 
     @Override
     public void cleanUsersTable() {
-        Transaction transaction = null;
-
         try (Session session = Util.getSessionFactory().openSession()) {
             transaction = session.beginTransaction();
             session.createQuery("DELETE FROM User w").executeUpdate();
-            //User item = new User(name, lastName, age);
-            //session.save(user);
             transaction.commit();
         } catch (Exception e) {
             if (transaction != null) {
                 transaction.rollback();
             }
         }
-
     }
 }
