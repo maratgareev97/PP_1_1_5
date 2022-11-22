@@ -10,28 +10,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class UserDaoJDBCImpl implements UserDao {
-    private static Statement statement = null;
-    private static Connection conn = Util.getConn();
 
-    static {
-        try {
-            statement = conn.createStatement();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public UserDaoJDBCImpl() {
-    }
-
-    public void connection_base() {
-    }
+    private static Connection connection = Util.getConn();
 
     public void createUsersTable() {
-        String sql = "CREATE TABLE IF NOT EXISTS kata1_1.user (id INT auto_increment NOT NULL, name varchar(100) null," +
-                " lastName varchar(100), age int, primary key(id))ENGINE=InnoDB;";
+        String sql = "" +
+                "BEGIN TRANSACTION WORK; CREATE TABLE IF NOT EXISTS kata1_1.user " +
+                "(id INT auto_increment NOT NULL, name varchar(100) null," +
+                " lastName varchar(100), age int, primary key(id))ENGINE=InnoDB; " +
+                "ROLLBACK WORK;";
         try {
-            statement.executeUpdate(sql);
+            connection.createStatement().executeUpdate(sql);
             System.out.println("Таблица создана");
 
         } catch (SQLException e) {
@@ -40,9 +29,11 @@ public class UserDaoJDBCImpl implements UserDao {
     }
 
     public void dropUsersTable() {
-        String sql = "DROP TABLE kata1_1.user;";
+        String sql = "BEGIN TRANSACTION WORK; " +
+                "DROP TABLE kata1_1.user; " +
+                "ROLLBACK WORK;";
         try {
-            statement.executeUpdate(sql);
+            connection.createStatement().executeUpdate(sql);
             System.out.println("Таблица удалена");
         } catch (SQLException e) {
             e.printStackTrace();
@@ -51,9 +42,11 @@ public class UserDaoJDBCImpl implements UserDao {
 
     public void saveUser(String name, String lastName, byte age) {
         int rows = 0;
-        String sql = "INSERT INTO kata1_1.user (name, lastName, age) VALUES (?, ?, ?)";
+        String sql = "BEGIN TRANSACTION WORK;" +
+                "INSERT INTO kata1_1.user (name, lastName, age) VALUES (?, ?, ?);" +
+                "ROLLBACK WORK;";
         try {
-            PreparedStatement stmt = conn.prepareStatement(sql);
+            PreparedStatement stmt = connection.prepareStatement(sql);
             stmt.setString(1, name);
             stmt.setString(2, lastName);
             stmt.setString(3, String.valueOf(age));
@@ -70,9 +63,11 @@ public class UserDaoJDBCImpl implements UserDao {
     public List<User> getAllUsers() {
         List<User> users = new ArrayList<User>();
         int rows = 0;
-        String sql = "select name, lastName, age from kata1_1.user;";
+        String sql = "BEGIN TRANSACTION WORK;" +
+                "select name, lastName, age from kata1_1.user;" +
+                "ROLLBACK WORK;";
         try {
-            ResultSet rs = statement.executeQuery(sql);
+            ResultSet rs = connection.createStatement().executeQuery(sql);
             while (rs.next()) {
                 String name = rs.getString(1);
                 String lastName = rs.getString(2);
@@ -88,11 +83,11 @@ public class UserDaoJDBCImpl implements UserDao {
     }
 
     public void cleanUsersTable() {
-        int rows = 0;
-        String sql="TRUNCATE TABLE kata1_1.user";
-        //String sql = "DELETE FROM kata1_1.user;";
+        String sql="BEGIN TRANSACTION WORK;" +
+                "TRUNCATE TABLE kata1_1.user;" +
+                "ROLLBACK WORK;";
         try {
-            statement.executeUpdate(sql);
+            connection.createStatement().executeUpdate(sql);
         } catch (SQLException e) {
             e.printStackTrace();
         }

@@ -5,8 +5,6 @@ import jm.task.core.jdbc.model.User;
 import java.util.List;
 
 public interface UserDao {
-    void connection_base();
-
     void createUsersTable();
 
     void dropUsersTable();

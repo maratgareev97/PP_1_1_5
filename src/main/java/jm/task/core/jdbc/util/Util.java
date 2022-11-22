@@ -18,6 +18,22 @@ public class Util {
     private static String userName = "root";
     private static String password = "GOGUDAserver123!";
     private static String url = "jdbc:mysql://localhost:3306/kata1_1";
+    private static String driver = "com.mysql.cj.jdbc.Driver";
+
+    // реализуйте настройку соеденения с БД
+    //System.out.println("-------Тестирование конектинга-------");
+    private static Connection connection = null;
+
+    static {
+        try {
+            Class.forName("com.mysql.jdbc.Driver");
+            connection = DriverManager.getConnection(url, userName, password);
+            System.out.println("С базой соеденились");
+        } catch (Exception ex) {
+            System.err.println("Ошибка соединения с базой");
+            ex.printStackTrace();
+        }
+    }
 
     public static SessionFactory getSessionFactory() {
         if (sessionFactory == null) {
@@ -26,10 +42,10 @@ public class Util {
 
                 // Hibernate settings equivalent to hibernate.cfg.xml's properties
                 Properties settings = new Properties();
-                settings.put(Environment.DRIVER, "com.mysql.cj.jdbc.Driver");
-                settings.put(Environment.URL, "jdbc:mysql://localhost:3306/kata1_1");
-                settings.put(Environment.USER, "root");
-                settings.put(Environment.PASS, "GOGUDAserver123!");
+                settings.put(Environment.DRIVER, driver);
+                settings.put(Environment.URL, url);
+                settings.put(Environment.USER, userName);
+                settings.put(Environment.PASS, password);
                 settings.put(Environment.DIALECT, "org.hibernate.dialect.MySQL5Dialect");
 
                 settings.put(Environment.SHOW_SQL, "true");
@@ -53,25 +69,8 @@ public class Util {
         return sessionFactory;
     }
 
-    // реализуйте настройку соеденения с БД
-    //System.out.println("-------Тестирование конектинга-------");
-    private static Connection conn = null;
-
-
-
-    static {
-        try {
-            Class.forName("com.mysql.jdbc.Driver");
-            conn = DriverManager.getConnection(url, userName, password);
-            System.out.println("С базой соеденились");
-        } catch (Exception ex) {
-            System.err.println("Ошибка соединения с базой");
-            ex.printStackTrace();
-        }
-    }
-
     public static Connection getConn() {
-        return conn;
+        return connection;
     }
 
 

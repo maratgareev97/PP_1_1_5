@@ -20,9 +20,9 @@ public class UserDaoHibernateImpl implements UserDao {
     public UserDaoHibernateImpl() {
     }
 
-    @Override
-    public void connection_base() {
-    }
+//    @Override
+//    public void connection_base() {
+//    }
 
     @Override
     public void createUsersTable() {
