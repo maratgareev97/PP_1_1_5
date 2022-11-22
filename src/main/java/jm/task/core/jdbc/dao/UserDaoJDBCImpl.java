@@ -11,7 +11,7 @@ import java.util.List;
 
 public class UserDaoJDBCImpl implements UserDao {
 
-    private static Connection connection = Util.getConn();
+    Connection connection = Util.getConn();
 
     public void createUsersTable() {
         String sql = "" +

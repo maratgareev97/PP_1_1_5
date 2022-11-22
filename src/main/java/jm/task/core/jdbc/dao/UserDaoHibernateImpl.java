@@ -20,10 +20,6 @@ public class UserDaoHibernateImpl implements UserDao {
     public UserDaoHibernateImpl() {
     }
 
-//    @Override
-//    public void connection_base() {
-//    }
-
     @Override
     public void createUsersTable() {
         String sql = "CREATE TABLE IF NOT EXISTS kata1_1.user (id INT auto_increment NOT NULL, name varchar(100) null," +
